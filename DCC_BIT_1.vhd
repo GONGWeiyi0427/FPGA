@@ -47,7 +47,7 @@ architecture Behavioral of DCC_BIT_1 is
 
 --Compteur de 100us
 signal start: std_logic;
-signal cpt: std_logic_vector(7 downto 0):="00000000"; 
+signal cpt: std_logic_vector(6 downto 0):="0000000"; 
 signal done_bas,done_haut: std_logic;
 
 type etat is(INIT,N_BAS,N_HAUT);
@@ -74,7 +74,7 @@ begin
     process(EP)
     begin
         case (EP) is
-            when INIT => start <= '0';
+            when INIT => DCC_1 <= '0';start <= '0';
             when N_BAS => DCC_1 <= '0'; start <= '1';
             when N_HAUT => DCC_1 <= '1'; start <= '1';
          end case;
@@ -83,11 +83,11 @@ begin
      --Compteur
      process(CLK_1MHz,start,cpt)
      begin
-        if start = '0' then cpt <= "00000000"; done_bas <= '0'; done_haut <= '0'; FIN_1 <= '0';
+        if start = '0' then cpt <= "0000000"; done_bas <= '0'; done_haut <= '0'; FIN_1 <= '0';
         elsif start = '1' and rising_edge(CLK_1MHz) then cpt <= cpt + '1';
         end if;
-        if cpt = "01100100" then done_bas <= '1';
-        elsif cpt = "11001000" then done_haut <= '1'; FIN_1 <= '1';
+        if cpt = "0011101" then done_bas <= '1';
+        elsif cpt = "111010" then done_haut <= '1'; FIN_1 <= '1';
         end if;
      end process;
      

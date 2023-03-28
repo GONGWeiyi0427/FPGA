@@ -74,7 +74,7 @@ begin
     process(EP)
     begin
         case (EP) is
-            when INIT => start <= '0';
+            when INIT => DCC_0 <= '0'; start <= '0';
             when N_BAS => DCC_0 <= '0'; start <= '1';
             when N_HAUT => DCC_0 <= '1'; start <= '1';
          end case;
@@ -86,8 +86,8 @@ begin
         if start = '0' then cpt <= "0000000"; done_bas <= '0'; done_haut <= '0'; FIN_0 <= '0';
         elsif start = '1' and rising_edge(CLK_1MHz) then cpt <= cpt + '1';
         end if;
-        if cpt = "0111010" then done_bas <= '1';
-        elsif cpt = "1110100" then done_haut <= '1'; FIN_0 <= '1';
+        if cpt = "0110010" then done_bas <= '1';
+        elsif cpt = "1100100" then done_haut <= '1'; FIN_0 <= '1';
         end if;
      end process;
      
