@@ -21,6 +21,7 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use ieee.std_logic_unsigned.all;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -38,7 +39,7 @@ entity MAE_100MHz is
      RESET: in std_logic;
      -- Registre DCC
      DCC_BIT: in std_logic;
-     FETCH: in std_logic;
+     --FETCH: in std_logic;
      COM_REG: out std_logic;
      -- TEMPO
      START_TEMPO: out std_logic;
@@ -76,23 +77,25 @@ begin
     begin
         case (EP) is
         when S0 => EF <= S1;
-        when S1 => EF <= S1; if DCC_BIT = '1' then EF <= S1; elsif DCC_BIT = '0' then EF <= S2; end if;
+        when S1 => EF <= S1; if DCC_BIT = '1' then EF <= S2; elsif DCC_BIT = '0' then EF <= S3; end if;
         when S2 => EF <= S2; if FIN_1 = '1' then EF <= S4; end if;
         when S3 => EF <= S3; if FIN_0 = '1' then EF <= S4; end if;
-        when S4 => EF <= S4; if last = '1' then EF <= S5; elsif last = '0' then EF <= S1; end if;
+        when S4 => EF <= S4; if cpt > 50 then EF <= S5; elsif cpt <= 50 then EF <= S1; end if;
         when S5 => EF <= S5; if FIN_TEMPO = '1' then EF <= S0; end if; 
         end case;
  end process;
 
  process(EP)
  begin
+    
      case (EP) is
-        when S0 => START_TEMPO <= '0'; COM_REG <= '0'; cpt <= 0;
-        when S1 => COM_REG <= '1'; cpt <= cpt + 1;
-        when S2 => GO_1 <= '1'; COM_REG <= '0';
-        when S3 => GO_0 <= '1'; COM_REG <= '0';
-        when S4 => GO_1 <= '0'; GO_0 <= '0';
-        when S5 => START_TEMPO <= '1'; 
+        when S0 => START_TEMPO <= '0'; COM_REG <= '0'; cpt <= 0; GO_1 <= '0'; GO_0 <= '0';
+        when S1 => COM_REG <= '1'; cpt <= cpt + 1; GO_1 <= '0'; GO_0 <= '0'; START_TEMPO <= '0';
+        when S2 => GO_1 <= '1'; GO_0 <= '0'; COM_REG <= 'U'; START_TEMPO <= '0'; cpt <= cpt;
+        when S3 => GO_0 <= '1'; GO_1 <= '0'; COM_REG <= 'U'; START_TEMPO <= '0'; cpt <= cpt;
+        when S4 => GO_1 <= '0'; GO_0 <= '0'; COM_REG <= 'U'; START_TEMPO <= '0'; cpt <= cpt;
+        when S5 => START_TEMPO <= '1'; COM_REG <= 'U'; GO_1 <= '0'; GO_0 <= '0'; cpt <= cpt;
+        --when others => NULL;
      end case;
  end process;
  
