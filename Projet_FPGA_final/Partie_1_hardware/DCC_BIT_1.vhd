@@ -34,12 +34,12 @@ use ieee.std_logic_unsigned.all;
 
 entity DCC_BIT_1 is
     Port (
-        CLK_100MHz: in std_logic;
-        CLK_1MHz: in std_logic;
+        CLK_100MHz: in std_logic;                                           --CLK to generate fsm
+        CLK_1MHz: in std_logic;                                             --CLK to generate the counter
         RESET: in std_logic;
-        GO_1: in std_logic;
-        FIN_1: out std_logic;
-        DCC_1: out std_logic
+        GO_1: in std_logic;                                                 --bit of active
+        FIN_1: out std_logic;                                               --bit of end
+        DCC_1: out std_logic                                                --output wave
      );
 end DCC_BIT_1;
 
@@ -86,8 +86,8 @@ begin
         if start = '0' then cpt <= "0000000"; done_bas <= '0'; done_haut <= '0'; FIN_1 <= '0';
         elsif start = '1' and rising_edge(CLK_1MHz) then cpt <= cpt + '1';
         end if;
-        if cpt = "0011101" then done_bas <= '1';
-        elsif cpt = "111010" then done_haut <= '1'; FIN_1 <= '1';
+        if cpt = "0011101" then done_bas <= '1';                                                    -- If the counter counts to 58, then it's the end of the state
+        elsif cpt = "111010" then done_haut <= '1'; FIN_1 <= '1';                                   -- If the counter counts to 116, then it's the end of the state, and it's all the end
         end if;
      end process;
      

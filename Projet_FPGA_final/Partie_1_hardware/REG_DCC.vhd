@@ -39,11 +39,11 @@ entity REG_DCC is
         CLK_100MHz: in std_logic;
         RESET: in std_logic;
         
-        COM_REG: in std_logic_vector(1 downto 0); --01 read, 10 send 1 bit
+        COM_REG: in std_logic_vector(1 downto 0);                           --01 read, 10 send 1 bit
         TRAME_DCC: in std_logic_vector(50 downto 0);
         
-        fetched: out std_logic;
-        fin_trame: out std_logic;
+        fetched: out std_logic;                                             --Bit to check if the trame is saved
+        fin_trame: out std_logic;                                           --Bit to check if the end of 51 trames
         DCC_BIT: out std_logic
      );
 end REG_DCC;
@@ -58,26 +58,26 @@ begin
 process(CLK_100MHz,RESET)
 --variable trame_tempo: std_logic;
 begin
-    if RESET = '1' then cpt <= 1; trame <= (others => '1'); DCC_BIT <= '1';
+    if RESET = '1' then cpt <= 1; trame <= (others => '1'); DCC_BIT <= '1';         --We reset all the bit and make trame in all 1 in order to make like preambule
     elsif rising_edge(CLK_100MHz) then
-        if COM_REG = "10" and cpt <= 51 and cpt >= 1 then 
-            DCC_BIT <= trame(51-cpt); 
-            cpt <= cpt + 1;
+        if COM_REG = "10" and cpt <= 51 and cpt >= 1 then                           --If the commande is 10 so output
+            DCC_BIT <= trame(51-cpt);                                               --We send bit by bit from 51 to 1
+            cpt <= cpt + 1;                                                         --Raise the cpt
             if cpt = 51 then
-                fin_trame <= '1';
+                fin_trame <= '1';                                                   --If cpt = 51 so it is the last one bit
             else 
-                fin_trame <= '0';
+                fin_trame <= '0';                                                   -- else then it is not
             end if;
-        elsif COM_REG = "01" then 
-            trame <= Trame_DCC & '1'; 
+        elsif COM_REG = "01" then                                                   --If the commande is 01 so input
+            trame <= Trame_DCC & '1';                                               --We save the trame with 1
             if trame = Trame_DCC & '1' then
-                fetched <= '1';
+                fetched <= '1';                                                     --Send the bit fetched to tell mae
             else 
                 fetched <= '0';
             end if;
-            cpt <= 1;
+            cpt <= 1;                                                               --We put the cpt in 1
         else
-            cpt <= cpt;
+            cpt <= cpt;                                                             --Save the trame
         end if;
      end if;
     

@@ -34,7 +34,7 @@ use IEEE.std_logic_unsigned;
 
 entity TOP_miniprojet is 
     Port (
-    interrupteurs: in std_logic_vector(7 downto 0);
+    interrupteurs: in std_logic_vector(7 downto 0);                                  -- Input as interruptions to test several fonctions
     clk100MHz: in std_logic;
     RESET: in std_logic;
     sortie_dcc: out std_logic
@@ -61,14 +61,14 @@ architecture Behavioral of TOP_miniprojet is
    signal fin_trame: std_logic;
 
 begin
-diviseur_horloge: entity work.CLK_DIV port map
+diviseur_horloge: entity work.CLK_DIV port map                                                                --Connection with diviseur_horloge
 (
      Reset=>RESET,
      Clk_In=>clk100MHz,
      Clk_Out=>Clk1M
  );
 
-compteur_tempo: entity work.COMPTEUR_TEMPO port map
+compteur_tempo: entity work.COMPTEUR_TEMPO port map                                                           --Connection with compteur_tempo
 (
      Clk=>clk100MHz, -- Horloge 100 MHz
      Reset=>RESET,				-- Reset Asynchrone
@@ -77,7 +77,7 @@ compteur_tempo: entity work.COMPTEUR_TEMPO port map
      Fin_Tempo=>Fin_Tempo	
 );
 
-dcc_bit_0 : entity work.DCC_BIT_0 port map
+dcc_bit_0 : entity work.DCC_BIT_0 port map                                                                    --Connection with dcc_bit_0
 (
      CLK_100MHz=>clk100MHz,
      CLK_1MHz=>Clk1M,
@@ -87,7 +87,7 @@ dcc_bit_0 : entity work.DCC_BIT_0 port map
      DCC_0=>DCC_0
 );
 
-dcc_bit_1 : entity work.DCC_BIT_1 port map
+dcc_bit_1 : entity work.DCC_BIT_1 port map                                                                    --Connection with dcc_bit_1
 (    
      CLK_100MHz=>clk100MHz,
      CLK_1MHz=>Clk1M,
@@ -97,7 +97,7 @@ dcc_bit_1 : entity work.DCC_BIT_1 port map
      DCC_1=>DCC_1
 );
 
-mae :  entity work.MAE_100MHz port map
+mae :  entity work.MAE_100MHz port map                                                                    --Connection with mae
 (
      CLK_100MHz=>clk100MHz,
      RESET=>RESET,
@@ -113,7 +113,7 @@ mae :  entity work.MAE_100MHz port map
      FIN_0=>FIN_0
 );
 
-reg_dcc :entity work.Reg_DCC port map
+reg_dcc :entity work.Reg_DCC port map                                                                    --Connection with reg_dcc
 (
      CLK_100MHz=>clk100MHz,
      RESET=>RESET,
@@ -124,12 +124,12 @@ reg_dcc :entity work.Reg_DCC port map
      DCC_BIT=>DCC_BIT
 );
 
-trame_gen: entity work.DCC_FRAME_GENERATOR port map
+trame_gen: entity work.DCC_FRAME_GENERATOR port map                                                                    --Connection with trame_gen
 (
     Interrupteur => interrupteurs,
     Trame_DCC => TRAME_DCC
 );
 
-sortie_dcc <= DCC_1 xor DCC_0;
+sortie_dcc <= DCC_1 xor DCC_0;                                                                           -- port xor to assemble the output
 
 end Behavioral;
