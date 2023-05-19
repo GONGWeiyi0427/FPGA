@@ -54,7 +54,7 @@ begin
                                           
 CLK_100MHz <= not CLK_100MHz after 10 ns;
 RESET <= '0' after 5 us;
-COM_REG <= '1' after 6 us, '0' after 70 us, '1' after 75 us; 
+COM_REG <= '01' after 6 us, '10' after 70 us, '01' after 75 us; 
 TRAME_DCC <= "100101010101010101010101010101010101010101010101001" after 5 us;
 
 
